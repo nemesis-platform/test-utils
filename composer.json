@@ -13,5 +13,10 @@
         "symfony/symfony":"~2.4",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-fixtures-bundle": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
     }
 }
