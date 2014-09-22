@@ -1,0 +1,17 @@
+{
+    "name": "scaytrase/symfony-dataset-testsuite",
+    "description": "Test utils for Symfony 2",
+    "minimum-stability": "dev",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Pavel Batanov",
+            "email": "pavel@batanov.me"
+        }
+    ],
+    "require-dev":{
+        "symfony/symfony":"~2.4",
+        "doctrine/orm": "~2.2,>=2.2.3",
+        "doctrine/doctrine-fixtures-bundle": "*"
+    }
+}
