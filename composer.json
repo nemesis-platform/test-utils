@@ -1,5 +1,5 @@
 {
-    "name": "scaytrase/symfony-dataset-testsuite",
+    "name": "scaytrase/symfony-test-utils",
     "description": "Test utils for Symfony 2",
     "minimum-stability": "dev",
     "license": "GPLv2",
