@@ -1,0 +1,10 @@
+ScayTrase\Tests\SampleBundle\Entity\TestEntity:
+  type: entity
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    field:
+      type: string
