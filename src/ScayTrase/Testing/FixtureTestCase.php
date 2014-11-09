@@ -27,31 +27,22 @@ abstract class FixtureTestCase extends WebTestCase
 {
     /** @var  EntityManager */
     protected static $em;
-    /** @var  Client */
-    protected $client;
     /** @var  KernelInterface */
     protected static $kernel;
+    /** @var  Client */
+    protected $client;
     /** @var  FixtureInterface[] */
     private $fixtures = array();
 
-    public static function getMetadata()
-    {
-        /** @var EntityManagerInterface $em */
-        static::$em = static::$kernel->getContainer()->get('doctrine')->getManager();
-
-        $metadata = static::$em->getMetadataFactory()->getAllMetadata();
-
-        return $metadata;
-    }
-
+    /**
+     * @throws \Doctrine\ORM\Tools\ToolsException
+     */
     public static function setUpBeforeClass()
     {
-        static::$kernel = static::getKernel();
+        static::$kernel = static::createKernel();
         static::$kernel->boot();
 
         $metadata = static::getMetadata();
-
-        static::assertNotEmpty($metadata, 'Metadata classes array is empty');
 
         $tool = new SchemaTool(static::$em);
         $tool->dropDatabase();
@@ -73,15 +64,25 @@ abstract class FixtureTestCase extends WebTestCase
                 )
             )
         );
-
-
     }
 
-    /** @return KernelInterface */
-    public static function getKernel()
+    /**
+     * @param array $options
+     * @return KernelInterface
+     */
+    protected static function createKernel(array $options = array())
     {
-        $client = static::createClient();
-        return $client->getKernel();
+        return parent::createKernel($options);
+    }
+
+    public static function getMetadata()
+    {
+        /** @var EntityManagerInterface $em */
+        static::$em = static::$kernel->getContainer()->get('doctrine')->getManager();
+
+        $metadata = static::$em->getMetadataFactory()->getAllMetadata();
+
+        return $metadata;
     }
 
     public function setUp()
@@ -94,9 +95,9 @@ abstract class FixtureTestCase extends WebTestCase
         // Use regex to parse the doc_block for a specific annotation
         $dataset_classes = static::parseDocBlock($doc_block, '@dataset');
 
-        if (empty($dataset_classes)) {
-            return;
-        }
+//        if (empty($dataset_classes)) {
+//            return;
+//        }
 
         $datasets = array();
 
@@ -107,14 +108,6 @@ abstract class FixtureTestCase extends WebTestCase
         $this->fixtures = $datasets;
 
         $this->loadTestData($this->fixtures);
-    }
-
-    /**
-     * @return FixtureInterface[]
-     */
-    public function getFixtures()
-    {
-        return $this->fixtures;
     }
 
     private static function parseDocBlock($doc_block, $tag)
@@ -166,6 +159,14 @@ abstract class FixtureTestCase extends WebTestCase
             $purger
         );
         $executor->execute($loader->getFixtures());
+    }
+
+    /**
+     * @return FixtureInterface[]
+     */
+    public function getFixtures()
+    {
+        return $this->fixtures;
     } // parseDocBlock
 
 }
