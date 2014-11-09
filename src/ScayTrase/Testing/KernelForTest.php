@@ -22,14 +22,24 @@ class KernelForTest extends Kernel
     /** @var Bundle[] */
     private $additional_bundles = array();
 
+    private $additional_configs = array();
+
     /**
      * @param string $environment
      * @param bool $debug
      * @param Bundle[] $additional_bundles
+     * @param array $additional_configs
      */
-    public function __construct($environment, $debug, $additional_bundles = array())
+
+    public function __construct($environment, $debug, $additional_bundles = array(), $additional_configs = array())
     {
         $this->additional_bundles = $additional_bundles;
+        $this->additional_configs = array_merge(
+            array(
+                __DIR__ . '/config.yml',
+            ),
+            $additional_configs
+        );
         parent::__construct($environment, $debug);
     }
 
@@ -69,6 +79,8 @@ class KernelForTest extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__ . '/config.yml');
+        foreach ($this->additional_configs as $config) {
+            $loader->load($config);
+        }
     }
 }
