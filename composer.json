@@ -13,8 +13,7 @@
         "symfony/symfony":"~2.4",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
-        "doctrine/doctrine-fixtures-bundle": "*",
-        "sensio/distribution-bundle": "~2.3"
+        "doctrine/doctrine-fixtures-bundle": "*"
     },
     "autoload": {
         "psr-0": {
