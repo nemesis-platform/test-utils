@@ -14,20 +14,38 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel;
 
 class KernelForTest extends Kernel
 {
+    /** @var Bundle[] */
+    private $additional_bundles = array();
+
+    /**
+     * @param string $environment
+     * @param bool $debug
+     * @param Bundle[] $additional_bundles
+     */
+    public function __construct($environment, $debug, $additional_bundles = array())
+    {
+        $this->additional_bundles = $additional_bundles;
+        parent::__construct($environment, $debug);
+    }
+
     /**
      * @return array
      */
     public function registerBundles()
     {
-        return array(
-            new FrameworkBundle(),
-            new SecurityBundle(),
-            new TwigBundle(),
-            new DoctrineBundle(),
+        return array_merge(
+            array(
+                new FrameworkBundle(),
+                new SecurityBundle(),
+                new TwigBundle(),
+                new DoctrineBundle(),
+            ),
+            $this->additional_bundles
         );
     }
 
