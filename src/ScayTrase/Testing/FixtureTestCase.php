@@ -20,6 +20,7 @@ use Doctrine\ORM\Tools\SchemaValidator;
 use ReflectionMethod;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 
@@ -95,17 +96,15 @@ abstract class FixtureTestCase extends WebTestCase
         // Use regex to parse the doc_block for a specific annotation
         $dataset_classes = static::parseDocBlock($doc_block, '@dataset');
 
-//        if (empty($dataset_classes)) {
-//            return;
-//        }
-
-        $datasets = array();
+        $this->fixtures = array();
 
         foreach ($dataset_classes as $dataset_class) {
-            $datasets[] = new $dataset_class;
+            $fixture = new $dataset_class();
+            if ($fixture instanceof ContainerAwareInterface) {
+                $fixture->setContainer(static::$kernel->getContainer());
+            }
+            $this->fixtures[] = $fixture;
         }
-
-        $this->fixtures = $datasets;
 
         $this->loadTestData($this->fixtures);
     }
