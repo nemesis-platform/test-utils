@@ -6,4 +6,7 @@ build/
 target/
 vendor/
 
+app/cache
+app/logs
+
 composer.lock
