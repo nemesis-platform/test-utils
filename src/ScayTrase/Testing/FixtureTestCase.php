@@ -88,53 +88,21 @@ abstract class FixtureTestCase extends WebTestCase
 
     public function setUp()
     {
-        $class = get_class($this);
-        $method = $this->getName();
-        $reflection = new ReflectionMethod($class, $method);
-        $doc_block = $reflection->getDocComment();
-
-        // Use regex to parse the doc_block for a specific annotation
-        $dataset_classes = static::parseDocBlock($doc_block, '@dataset');
-
         $this->fixtures = array();
+        $annotations = $this->getAnnotations();
 
-        foreach ($dataset_classes as $dataset_class) {
-            $fixture = new $dataset_class();
-            if ($fixture instanceof ContainerAwareInterface) {
-                $fixture->setContainer(static::$kernel->getContainer());
+        if (isset($annotations['method']['dataset'])){
+            $dataset_classes = $annotations['method']['dataset'];
+            foreach ($dataset_classes as $dataset_class) {
+                $fixture = new $dataset_class();
+                if ($fixture instanceof ContainerAwareInterface) {
+                    $fixture->setContainer(static::$kernel->getContainer());
+                }
+                $this->fixtures[] = $fixture;
             }
-            $this->fixtures[] = $fixture;
         }
 
         $this->loadTestData($this->fixtures);
-    }
-
-    private static function parseDocBlock($doc_block, $tag)
-    {
-
-        $matches = array();
-
-        if (empty($doc_block)) {
-            return $matches;
-        }
-
-        $regex = "/{$tag} (.*)(\\r\\n|\\r|\\n)/U";
-        preg_match_all($regex, $doc_block, $matches);
-
-        if (empty($matches[1])) {
-            return array();
-        }
-
-        // Removed extra index
-        $matches = $matches[1];
-
-        // Trim the results, array item by array item
-        foreach ($matches as $ix => $match) {
-            $matches[$ix] = trim($match);
-        }
-
-        return $matches;
-
     }
 
     /**

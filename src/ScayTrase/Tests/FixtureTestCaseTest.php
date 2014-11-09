@@ -35,5 +35,26 @@ class FixtureTestCaseTest extends FixtureTestCase
     {
         $this->assertEmpty($this->getFixtures());
     }
+
+    public function sampleDataProvider()
+    {
+        return array(
+            'sample set 1' => array(1,2,3),
+            'sample set 2' => array(4,5,9),
+        );
+    }
+
+    /**
+     * @dataset ScayTrase\Tests\SampleFixture
+     * @dataProvider sampleDataProvider
+     * @param $a
+     * @param $b
+     * @param $c
+     */
+    public function testDataProviders($a,$b,$c)
+    {
+        $this->assertEquals($c,$a+$b);
+        $this->assertCount(1,$this->getFixtures());
+    }
 }
  
