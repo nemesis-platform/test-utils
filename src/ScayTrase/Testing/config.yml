@@ -1,0 +1,15 @@
+framework:
+    secret:          secret
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+    templating:
+        engines: ['twig']
+
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        memory:   true
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
