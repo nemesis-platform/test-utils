@@ -9,40 +9,45 @@
 namespace ScayTrase\Testing;
 
 
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
+use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 abstract class FixtureTestCase extends WebTestCase
 {
     /** @var  EntityManager */
     protected static $em;
-    /** @var  KernelInterface */
-    protected static $kernel;
     /** @var  Client */
-    protected $client;
+    protected static $client;
+
     /** @var  FixtureInterface[] */
     private $fixtures = array();
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return static::$kernel->getContainer();
+    }
 
     /**
      * @throws \Doctrine\ORM\Tools\ToolsException
      */
     public static function setUpBeforeClass()
     {
-        static::$kernel = static::createKernel();
-        static::$kernel->boot();
+        parent::setUpBeforeClass();
+        static::bootKernel();
 
         $metadata = static::getMetadata();
 
@@ -68,15 +73,6 @@ abstract class FixtureTestCase extends WebTestCase
         );
     }
 
-    /**
-     * @param array $options
-     * @return KernelInterface
-     */
-    protected static function createKernel(array $options = array())
-    {
-        return parent::createKernel($options);
-    }
-
     public static function getMetadata()
     {
         /** @var EntityManagerInterface $em */
@@ -87,73 +83,26 @@ abstract class FixtureTestCase extends WebTestCase
         return $metadata;
     }
 
-    /**
-     * @param $class
-     * @param array $known_fixtures
-     * @return FixtureInterface[]
-     */
-    private function buildFixtureDependencies($class, $known_fixtures = array())
-    {
-        /** @var FixtureInterface[] $fixtures */
-        $fixtures = array();
-
-        // ignore cyclic dependencies
-        if (array_key_exists($class, $known_fixtures)) {
-            return $fixtures;
-        }
-
-        $fixture = new $class;
-        if (!($fixture instanceof FixtureInterface)) {
-            return $fixtures;
-        }
-
-        if ($fixture instanceof ContainerAwareInterface) {
-            $fixture->setContainer(static::$kernel->getContainer());
-        }
-
-        if ($fixture instanceof DependentFixtureInterface) {
-            foreach ($fixture->getDependencies() as $dependend_class) {
-                $fixtures = array_merge($fixtures, $this->buildFixtureDependencies($dependend_class, $fixtures));
-            }
-        }
-
-        $fixtures[$class] = $fixture;
-
-        return $fixtures;
-    }
-
     public function setUp()
     {
+        parent::setUp();
+        parent::bootKernel();
+
         $this->fixtures = array();
         $annotations = $this->getAnnotations();
 
         if (isset($annotations['method']['dataset'])) {
             $dataset_classes = $annotations['method']['dataset'];
             foreach ($dataset_classes as $dataset_class) {
-                $this->fixtures = array_merge(
-                    $this->fixtures,
-                    $this->buildFixtureDependencies($dataset_class, $this->fixtures)
-                );
+                $fixture = new $dataset_class();
+                if (!($fixture instanceof FixtureInterface)) {
+                    continue;
+                }
+                $this->fixtures[] = $fixture;
             }
         }
 
-//        uasort(
-//            $this->fixtures,
-//            function (FixtureInterface $a, FixtureInterface $b) {
-//                if ($a instanceof OrderedFixtureInterface && $b instanceof OrderedFixtureInterface) {
-//                    return ($a->getOrder() < $b->getOrder() ? -1 : 1);
-//                }
-//
-//                if ($a instanceof OrderedFixtureInterface) {
-//                    return -1;
-//                }
-//                if ($b instanceof OrderedFixtureInterface) {
-//                    return 1;
-//                }
-//
-//                return 0;
-//            }
-//        );
+        static::assertNotNull(static::$kernel->getContainer());
 
         $this->loadTestData($this->fixtures);
     }
@@ -161,9 +110,9 @@ abstract class FixtureTestCase extends WebTestCase
     /**
      * @param FixtureInterface|FixtureInterface[] $data
      */
-    protected function loadTestData($data)
+    private function loadTestData($data)
     {
-        $loader = new Loader();
+        $loader = new ContainerAwareLoader(static::$kernel->getContainer());
 
         if (!is_array($data)) {
             $data = array($data);
@@ -173,11 +122,14 @@ abstract class FixtureTestCase extends WebTestCase
             $loader->addFixture($dataSet);
         }
 
+        $this->fixtures = $loader->getFixtures();
+
         $purger = new ORMPurger();
         $executor = new ORMExecutor(
             static::$em,
             $purger
         );
+
         $executor->execute($loader->getFixtures());
     }
 
@@ -187,6 +139,5 @@ abstract class FixtureTestCase extends WebTestCase
     public function getFixtures()
     {
         return $this->fixtures;
-    } // parseDocBlock
-
+    }
 }

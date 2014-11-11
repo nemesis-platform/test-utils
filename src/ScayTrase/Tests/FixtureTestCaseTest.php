@@ -15,10 +15,6 @@ class FixtureTestCaseTest extends FixtureTestCase
 {
     public static function createKernel(array $options = array())
     {
-        if (!class_exists('PDO') || !in_array('sqlite', \PDO::getAvailableDrivers())) {
-            self::markTestSkipped('This test requires SQLite support in your environment');
-        }
-
         return new KernelForTest('test', true);
     }
 
