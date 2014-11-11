@@ -9,15 +9,16 @@
 namespace ScayTrase\Testing;
 
 
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\SchemaValidator;
-use ReflectionMethod;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -86,21 +87,73 @@ abstract class FixtureTestCase extends WebTestCase
         return $metadata;
     }
 
+    /**
+     * @param $class
+     * @param array $known_fixtures
+     * @return FixtureInterface[]
+     */
+    private function buildFixtureDependencies($class, $known_fixtures = array())
+    {
+        /** @var FixtureInterface[] $fixtures */
+        $fixtures = array();
+
+        // ignore cyclic dependencies
+        if (array_key_exists($class, $known_fixtures)) {
+            return $fixtures;
+        }
+
+        $fixture = new $class;
+        if (!($fixture instanceof FixtureInterface)) {
+            return $fixtures;
+        }
+
+        if ($fixture instanceof ContainerAwareInterface) {
+            $fixture->setContainer(static::$kernel->getContainer());
+        }
+
+        $fixtures[$class] = $fixture;
+
+        if ($fixture instanceof DependentFixtureInterface) {
+            foreach ($fixture->getDependencies() as $dependend_class) {
+                $fixtures = array_merge($fixtures, $this->buildFixtureDependencies($dependend_class, $fixtures));
+            }
+        }
+
+        return $fixtures;
+    }
+
     public function setUp()
     {
         $this->fixtures = array();
         $annotations = $this->getAnnotations();
 
-        if (isset($annotations['method']['dataset'])){
+        if (isset($annotations['method']['dataset'])) {
             $dataset_classes = $annotations['method']['dataset'];
             foreach ($dataset_classes as $dataset_class) {
-                $fixture = new $dataset_class();
-                if ($fixture instanceof ContainerAwareInterface) {
-                    $fixture->setContainer(static::$kernel->getContainer());
-                }
-                $this->fixtures[] = $fixture;
+                $this->fixtures = array_merge(
+                    $this->fixtures,
+                    $this->buildFixtureDependencies($dataset_class, $this->fixtures)
+                );
             }
         }
+
+        uasort(
+            $this->fixtures,
+            function (FixtureInterface $a, FixtureInterface $b) {
+                if ($a instanceof OrderedFixtureInterface && $b instanceof OrderedFixtureInterface) {
+                    return ($a->getOrder() < $b->getOrder() ? -1 : 1);
+                }
+
+                if ($a instanceof OrderedFixtureInterface) {
+                    return -1;
+                }
+                if ($b instanceof OrderedFixtureInterface) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        );
 
         $this->loadTestData($this->fixtures);
     }

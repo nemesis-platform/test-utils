@@ -13,7 +13,8 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Exception;
 
-class SampleFixture implements FixtureInterface {
+class SampleFixture implements FixtureInterface
+{
 
     /**
      * Load data fixtures with the passed EntityManager

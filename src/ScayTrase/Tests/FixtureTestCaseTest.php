@@ -28,7 +28,7 @@ class FixtureTestCaseTest extends FixtureTestCase
      */
     public function testFixtureLoading()
     {
-        $this->assertCount(2, $this->getFixtures());
+        $this->assertCount(1, $this->getFixtures());
     }
 
     public function testNoFixturesLoaded()
@@ -36,11 +36,19 @@ class FixtureTestCaseTest extends FixtureTestCase
         $this->assertEmpty($this->getFixtures());
     }
 
+    /**
+     * @dataset ScayTrase\Tests\SampleDependentFixture
+     */
+    public function testDependedFixtures()
+    {
+        $this->assertCount(2, $this->getFixtures());
+    }
+
     public function sampleDataProvider()
     {
         return array(
-            'sample set 1' => array(1,2,3),
-            'sample set 2' => array(4,5,9),
+            'sample set 1' => array(1, 2, 3),
+            'sample set 2' => array(4, 5, 9),
         );
     }
 
@@ -51,10 +59,10 @@ class FixtureTestCaseTest extends FixtureTestCase
      * @param $b
      * @param $c
      */
-    public function testDataProviders($a,$b,$c)
+    public function testDataProviders($a, $b, $c)
     {
-        $this->assertEquals($c,$a+$b);
-        $this->assertCount(1,$this->getFixtures());
+        $this->assertEquals($c, $a + $b);
+        $this->assertCount(1, $this->getFixtures());
     }
 }
  
