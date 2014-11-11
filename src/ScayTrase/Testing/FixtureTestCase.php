@@ -111,13 +111,13 @@ abstract class FixtureTestCase extends WebTestCase
             $fixture->setContainer(static::$kernel->getContainer());
         }
 
-        $fixtures[$class] = $fixture;
-
         if ($fixture instanceof DependentFixtureInterface) {
             foreach ($fixture->getDependencies() as $dependend_class) {
                 $fixtures = array_merge($fixtures, $this->buildFixtureDependencies($dependend_class, $fixtures));
             }
         }
+
+        $fixtures[$class] = $fixture;
 
         return $fixtures;
     }
@@ -137,23 +137,23 @@ abstract class FixtureTestCase extends WebTestCase
             }
         }
 
-        uasort(
-            $this->fixtures,
-            function (FixtureInterface $a, FixtureInterface $b) {
-                if ($a instanceof OrderedFixtureInterface && $b instanceof OrderedFixtureInterface) {
-                    return ($a->getOrder() < $b->getOrder() ? -1 : 1);
-                }
-
-                if ($a instanceof OrderedFixtureInterface) {
-                    return -1;
-                }
-                if ($b instanceof OrderedFixtureInterface) {
-                    return 1;
-                }
-
-                return 0;
-            }
-        );
+//        uasort(
+//            $this->fixtures,
+//            function (FixtureInterface $a, FixtureInterface $b) {
+//                if ($a instanceof OrderedFixtureInterface && $b instanceof OrderedFixtureInterface) {
+//                    return ($a->getOrder() < $b->getOrder() ? -1 : 1);
+//                }
+//
+//                if ($a instanceof OrderedFixtureInterface) {
+//                    return -1;
+//                }
+//                if ($b instanceof OrderedFixtureInterface) {
+//                    return 1;
+//                }
+//
+//                return 0;
+//            }
+//        );
 
         $this->loadTestData($this->fixtures);
     }
