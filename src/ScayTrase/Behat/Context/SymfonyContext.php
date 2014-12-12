@@ -13,6 +13,7 @@ use Behat\Mink\Driver\GoutteDriver;
 use Behat\Mink\Driver\SahiDriver;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Behat\Symfony2Extension\Driver\KernelDriver;
 use PHPUnit_Framework_Assert;
@@ -21,7 +22,7 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
-class SymfonyContext extends RawMinkContext
+class SymfonyContext extends RawMinkContext implements KernelAwareContext
 {
 
     use KernelDictionary;
