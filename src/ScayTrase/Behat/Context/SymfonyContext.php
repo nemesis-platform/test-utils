@@ -22,10 +22,8 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
-class SymfonyContext extends RawMinkContext implements KernelAwareContext
+class SymfonyContext extends RawSymfonyContext
 {
-
-    use KernelDictionary;
 
     /**
      * @Given /^I submit form with button "([^"]*)"$/
@@ -63,48 +61,6 @@ class SymfonyContext extends RawMinkContext implements KernelAwareContext
         };
 
 
-    }
-
-
-    /**
-     * @return Client
-     */
-    protected function getSymfonyClient()
-    {
-        /** @var GoutteDriver $driver */
-        $driver = $this->getSession('symfony2')->getDriver();
-
-        return $driver->getClient();
-    }
-
-    /**
-     * @throws UnsupportedDriverActionException
-     * @return Profile
-     */
-    public function getSymfonyProfile()
-    {
-        $driver = $this->getSession()->getDriver();
-        if (!$driver instanceof KernelDriver) {
-            throw new UnsupportedDriverActionException(
-                'You need to tag the scenario with ' .
-                '"@mink:symfony2". Using the profiler is not ' .
-                'supported by %s',
-                $driver
-            );
-        }
-
-        /** @var $client \Symfony\Bundle\FrameworkBundle\Client */
-        $client = $driver->getClient();
-        $profile = $client->getProfile();
-        if (false === $profile) {
-            throw new \RuntimeException(
-                'The profiler is disabled. Activate it by setting ' .
-                'framework.profiler.only_exceptions to false in ' .
-                'your config'
-            );
-        }
-
-        return $profile;
     }
 
     /**
