@@ -11,12 +11,12 @@ env:
   - SYMFONY_VERSION='2.3.*' deps='no'
   - SYMFONY_VERSION='2.5.*' deps='no'
   - SYMFONY_VERSION='2.6.*' deps='no'
-  - SYMFONY_VERSION='2.7.*' deps='no'
+  - SYMFONY_VERSION='2.7.*@dev' deps='no'
 
 matrix:
     include:
       - php: 5.5
-        env: SYMFONY_VERSION='dev-master' deps='no'
+        env: SYMFONY_VERSION='dev-master@dev' deps='no'
       - php: 5.3.3
         env: SYMFONY_VERSION='2.3.*' deps='low'
 
