@@ -24,10 +24,13 @@ matrix:
         - php: hhvm
 
 before_install:
-    - mkdir -p build
-    - composer self-update
+  - travis_retry composer self-update
 
 install:
     - composer require --no-update symfony/symfony=${SYMFONY_VERSION}
     - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
     - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
+
+script:
+  - mkdir -p build
+  - phpunit -c phpunit.xml --coverage-text -vvv
