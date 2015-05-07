@@ -29,6 +29,8 @@ before_install:
 install:
     - php -r "echo ini_get('memory_limit').PHP_EOL;"
     - composer require --no-update symfony/framework-bundle=${SYMFONY_VERSION}
+    - composer require --no-update symfony/security-bundle=${SYMFONY_VERSION}
+    - composer require --no-update symfony/twig-bundle=${SYMFONY_VERSION}
     - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
     - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
 
