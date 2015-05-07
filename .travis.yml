@@ -1,0 +1,37 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+
+env:
+  - SYMFONY_VERSION='2.3.*' deps='no'
+  - SYMFONY_VERSION='2.5.*' deps='no'
+  - SYMFONY_VERSION='2.6.*' deps='no'
+  - SYMFONY_VERSION='2.7.*' deps='no'
+
+matrix:
+    include:
+      - php: 5.5
+        env: SYMFONY_VERSION='dev-master' deps='no'
+      - php: 5.3.3
+        env: SYMFONY_VERSION='2.3.*' deps='low'
+
+    allow_failures:
+        - php: hhvm
+
+before_install:
+    - mkdir -p build
+    - composer self-update
+
+install:
+    - composer require --no-update symfony/symfony=${SYMFONY_VERSION}
+    - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
+
+# omitting "script:" will default to phpunit
+# use the $DB env variable to determine the phpunit.xml to use
+script: phpunit --configuration phpunit.xml --coverage-text
