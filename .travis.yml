@@ -31,5 +31,3 @@ install:
     - composer require --no-update symfony/symfony=${SYMFONY_VERSION}
     - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
     - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
-
-script: phpunit --configuration phpunit.xml --coverage-text
