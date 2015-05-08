@@ -18,7 +18,7 @@ matrix:
       - php: 5.5
         env: SYMFONY_VERSION='~2.8@dev' deps='no'
       - php: 5.5
-        env: SYMFONY_VERSION='~2.8@dev|~3.0@dev' deps='no'
+        env: SYMFONY_VERSION='(~2.8|~3.0)@dev' deps='no'
       - php: 5.3.3
         env: SYMFONY_VERSION='2.3.*' deps='low'
 
