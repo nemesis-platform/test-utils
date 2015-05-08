@@ -29,7 +29,6 @@ before_install:
   - travis_retry composer self-update
 
 install:
-    - php -r "echo ini_get('memory_limit').PHP_EOL;"
     - composer require --no-update symfony/symfony=${SYMFONY_VERSION}
     - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
     - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
