@@ -46,7 +46,9 @@ abstract class FixtureTestCase extends WebTestCase
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        static::bootKernel();
+
+        static::$kernel = static::createKernel(array());
+        static::$kernel->boot();
 
         $metadata = static::getMetadata();
 
@@ -85,7 +87,9 @@ abstract class FixtureTestCase extends WebTestCase
     public function setUp()
     {
         parent::setUp();
-        parent::bootKernel();
+
+        static::$kernel = static::createKernel(array());
+        static::$kernel->boot();
 
         $this->fixtures = array();
         $annotations = $this->getAnnotations();
