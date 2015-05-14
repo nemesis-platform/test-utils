@@ -8,7 +8,6 @@
 
 namespace ScayTrase\Tests\PHP53;
 
-
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
