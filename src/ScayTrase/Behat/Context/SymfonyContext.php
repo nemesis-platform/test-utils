@@ -21,8 +21,9 @@ use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-class SymfonyContext extends RawSymfonyContext
+abstract class SymfonyContext extends RawSymfonyContext
 {
 
     /**
@@ -82,10 +83,7 @@ class SymfonyContext extends RawSymfonyContext
         $container = $this->getContainer();
         $session = $container->get('session');
 
-        $user = $container->get('doctrine.orm.entity_manager')->getRepository(
-            'SiteBundle:User'
-        )->findOneBy(array('email' => $email));
-
+        $user = $this->getUserByUsername($email);
         PHPUnit_Framework_Assert::assertNotNull($user, 'Unknown user with email ' . $email);
 
         $firewall = 'secured_area';
@@ -128,4 +126,10 @@ class SymfonyContext extends RawSymfonyContext
     {
         return str_replace('\\"', '"', $argument);
     }
+
+    /**
+     * @param $username
+     * @return UserInterface
+     */
+    abstract protected function getUserByUsername($username);
 }
