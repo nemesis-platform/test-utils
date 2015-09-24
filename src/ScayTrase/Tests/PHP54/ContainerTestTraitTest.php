@@ -9,7 +9,6 @@
 namespace ScayTrase\Tests\PHP54;
 
 use ScayTrase\Testing\ContainerTestTrait;
-use ScayTrase\Tests\PHP53\FixtureBundle;
 
 /**
  * Class ContainerTestTraitTest
