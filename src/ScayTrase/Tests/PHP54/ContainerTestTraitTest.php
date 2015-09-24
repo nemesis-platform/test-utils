@@ -6,10 +6,16 @@
  * Time: 21:45
  */
 
-namespace ScayTrase\Tests;
+namespace ScayTrase\Tests\PHP54;
 
 use ScayTrase\Testing\ContainerTestTrait;
+use ScayTrase\Tests\PHP53\FixtureBundle;
 
+/**
+ * Class ContainerTestTraitTest
+ * @package ScayTrase\Tests\PHP53
+ * @requires PHP 5.4
+ */
 class ContainerTestTraitTest extends \PHPUnit_Framework_TestCase
 {
     use ContainerTestTrait;

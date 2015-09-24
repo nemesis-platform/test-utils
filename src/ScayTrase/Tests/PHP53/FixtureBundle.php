@@ -6,7 +6,7 @@
  * Time: 13:53
  */
 
-namespace ScayTrase\Tests;
+namespace ScayTrase\Tests\PHP53;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

@@ -6,7 +6,7 @@
  * Time: 13:53
  */
 
-namespace ScayTrase\Tests;
+namespace ScayTrase\Tests\PHP53;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
