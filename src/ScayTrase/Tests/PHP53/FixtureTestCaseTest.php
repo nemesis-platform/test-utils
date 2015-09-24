@@ -6,7 +6,7 @@
  * Time: 15:25
  */
 
-namespace ScayTrase\Tests;
+namespace ScayTrase\Tests\PHP53;
 
 use ScayTrase\Testing\FixtureTestCase;
 use ScayTrase\Testing\KernelForTest;
@@ -19,8 +19,8 @@ class FixtureTestCaseTest extends FixtureTestCase
     }
 
     /**
-     * @dataset ScayTrase\Tests\SampleFixture
-     * @dataset ScayTrase\Tests\SampleFixture
+     * @dataset ScayTrase\Tests\PHP53\SampleFixture
+     * @dataset ScayTrase\Tests\PHP53\SampleFixture
      */
     public function testFixtureLoading()
     {
@@ -33,7 +33,7 @@ class FixtureTestCaseTest extends FixtureTestCase
     }
 
     /**
-     * @dataset ScayTrase\Tests\SampleDependentFixture
+     * @dataset ScayTrase\Tests\PHP53\SampleDependentFixture
      */
     public function testDependedFixtures()
     {
@@ -49,7 +49,7 @@ class FixtureTestCaseTest extends FixtureTestCase
     }
 
     /**
-     * @dataset ScayTrase\Tests\SampleFixture
+     * @dataset ScayTrase\Tests\PHP53\SampleFixture
      * @dataProvider sampleDataProvider
      * @param $a
      * @param $b
@@ -61,4 +61,3 @@ class FixtureTestCaseTest extends FixtureTestCase
         $this->assertCount(1, $this->getFixtures());
     }
 }
- 

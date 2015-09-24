@@ -14,8 +14,11 @@
         bootstrap="vendor/autoload.php">
 
     <testsuites>
-        <testsuite name="All tests">
-            <directory>src/*/Tests</directory>
+        <testsuite name="PHP 5.3 tests">
+            <directory>src/*/Tests/PHP53</directory>
+        </testsuite>
+        <testsuite name="PHP 5.4 tests">
+            <directory phpVersion="5.4.0" phpVersionOperator=">=">src/*/Tests/PHP54</directory>
         </testsuite>
     </testsuites>
 

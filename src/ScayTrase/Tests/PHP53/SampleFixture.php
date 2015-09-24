@@ -6,7 +6,7 @@
  * Time: 15:16
  */
 
-namespace ScayTrase\Tests;
+namespace ScayTrase\Tests\PHP53;
 
 
 use Doctrine\Common\DataFixtures\FixtureInterface;

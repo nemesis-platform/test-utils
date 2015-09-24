@@ -6,7 +6,7 @@
  * Time: 12:01
  */
 
-namespace ScayTrase\Tests;
+namespace ScayTrase\Tests\PHP53;
 
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -25,7 +25,7 @@ class SampleDependentFixture implements FixtureInterface, DependentFixtureInterf
     function getDependencies()
     {
         return array(
-            'ScayTrase\Tests\SampleFixture'
+            'ScayTrase\Tests\PHP53\SampleFixture'
         );
     }
 
