@@ -8,8 +8,10 @@
 
 namespace ScayTrase\Testing;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 trait ContainerTestTrait
@@ -22,18 +24,22 @@ trait ContainerTestTrait
      */
     protected function buildContainer(array $bundles = array(), array $configs = array())
     {
-        $container = new ContainerBuilder();
+        $container = new ContainerBuilder(new ParameterBag(array(
+            'kernel.debug' => false,
+            'kernel.bundles' => $bundles,
+            'kernel.cache_dir' => sys_get_temp_dir(),
+            'kernel.environment' => 'test',
+            'kernel.root_dir' => __DIR__,
+        )));
+        $container->set('annotation_reader', new AnnotationReader());
 
         foreach ($bundles as $bundle) {
             $bundle->build($container);
             $this->loadExtension($bundle, $container, $configs);
         }
-
         $container->compile();
-
         $dumper = new PhpDumper($container);
         $dumper->dump();
-
         return $container;
     }
 
