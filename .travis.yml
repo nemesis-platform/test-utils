@@ -10,18 +10,19 @@ php:
 
 env:
   - SYMFONY_VERSION='2.3.*' deps='no'
-  - SYMFONY_VERSION='2.5.*' deps='no'
-  - SYMFONY_VERSION='2.6.*' deps='no'
-  - SYMFONY_VERSION='2.7.*@dev' deps='no'
+  - SYMFONY_VERSION='2.7.*' deps='no'
+  - SYMFONY_VERSION='2.8.*' deps='no'
 
 matrix:
     include:
-      - php: 5.5
-        env: SYMFONY_VERSION='~2.8@dev' deps='no'
-      - php: 5.5
-        env: SYMFONY_VERSION='~2.8|~3.0@dev' deps='no'
-      - php: 5.3.3
+      - php: 5.3.6
         env: SYMFONY_VERSION='2.3.*' deps='low'
+      - php: 5.5
+        env: SYMFONY_VERSION='3.0.*' deps='low'
+      - php: 5.6
+        env: SYMFONY_VERSION='3.0.*' deps='low'
+      - php: 7
+        env: SYMFONY_VERSION='3.0.*' deps='low'
 
     allow_failures:
         - php: hhvm
