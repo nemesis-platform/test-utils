@@ -98,6 +98,8 @@ class MinkContext extends RawMinkContext
     /**
      * @Given /^auto redirection (enabled|disabled)$/
      * @param $enabled
+     *
+     * Toggles redirection following for KernelDriver
      */
     public function toggleAutoRedirection($enabled)
     {
