@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
@@ -15,7 +14,7 @@ env:
 
 matrix:
     include:
-      - php: 5.3
+      - php: 5.4
         env: SYMFONY_VERSION='2.3.*' deps='low'
       - php: 5.5
         env: SYMFONY_VERSION='3.0.*' deps='low'
@@ -32,8 +31,8 @@ before_install:
 
 install:
     - composer require --no-update symfony/symfony=${SYMFONY_VERSION}
-    - if [ "$deps" = "no" ]; then composer -dmemory_limit=-1 --prefer-source install; fi;
-    - if [ "$deps" = "low" ]; then composer -dmemory_limit=-1 --prefer-source --prefer-lowest --prefer-stable update; fi;
+    - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
 
 script:
   - mkdir -p build
