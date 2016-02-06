@@ -32,9 +32,9 @@ before_install:
 
 install:
     - composer require --no-update symfony/symfony=${SYMFONY_VERSION}
-    - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
-    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
+    - if [ "$deps" = "no" ]; then composer -dmemory_limit=-1 --prefer-source install; fi;
+    - if [ "$deps" = "low" ]; then composer -dmemory_limit=-1 --prefer-source --prefer-lowest --prefer-stable update; fi;
 
 script:
   - mkdir -p build
-  - phpunit --colors -c phpunit.xml
+  - vendor/bin/phpunit --colors -c phpunit.xml
